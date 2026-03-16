@@ -22,8 +22,16 @@ Cypress.Commands.add('getProductSubmitButton', () => {
   return cy.get('[data-testid="cadastarProdutos"]');
 });
 
+Cypress.Commands.add('getProductsTable', () => {
+  return cy.get('table');
+});
+
 Cypress.Commands.add('getProductRowByName', (name) => {
   return cy.contains('td', name).parent('tr');
+});
+
+Cypress.Commands.add('getDeleteProductButtonByName', (name) => {
+  return cy.getProductRowByName(name).contains('button', 'Excluir');
 });
 
 Cypress.Commands.add('generateDynamicProduct', () => {
@@ -76,7 +84,7 @@ Cypress.Commands.add('assertProductImageSelected', (product) => {
 
 Cypress.Commands.add('assertProductListPageVisible', () => {
   cy.get('h1').should('contain', 'Lista dos Produtos');
-  cy.get('table').should('be.visible');
+  cy.getProductsTable().should('be.visible');
 });
 
 Cypress.Commands.add('assertProductInList', (product) => {
@@ -86,4 +94,12 @@ Cypress.Commands.add('assertProductInList', (product) => {
     .and('contain', product.descricao)
     .and('contain', String(product.quantidade))
     .and('contain', product.imagem.fileName);
+});
+
+Cypress.Commands.add('deleteProductByName', (name) => {
+  cy.getDeleteProductButtonByName(name).click();
+});
+
+Cypress.Commands.add('assertProductNotInList', (name) => {
+  cy.contains('td', name).should('not.exist');
 });
