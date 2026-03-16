@@ -23,6 +23,12 @@ Cypress.Commands.add('submitLogin', () => {
   cy.getLoginSubmitButton().click();
 });
 
+Cypress.Commands.add('assertLoginPageVisible', () => {
+  cy.getLoginEmailInput().should('be.visible');
+  cy.getLoginPasswordInput().should('be.visible');
+  cy.getLoginSubmitButton().should('be.visible');
+});
+
 Cypress.Commands.add('loginUI', (email, password) => {
   cy.visitLogin();
   cy.fillLogin(email, password);

@@ -33,3 +33,7 @@ Cypress.Commands.add('fillUserForm', (user) => {
 Cypress.Commands.add('submitUserForm', () => {
   cy.getUserSubmitButton().click();
 });
+
+Cypress.Commands.add('assertUserFormVisible', () => {
+  cy.getUserSubmitButton().should('be.visible');
+});
