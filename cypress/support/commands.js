@@ -54,3 +54,50 @@ Cypress.Commands.add('createAdminUserViaApi', () => {
     });
   });
 });
+// ================================
+// COMANDOS DE UI — FRONTEND
+// ================================
+
+Cypress.Commands.add('visitLogin', () => {
+  cy.visit('/');
+});
+
+Cypress.Commands.add('fillLogin', (email, password) => {
+  cy.get('[data-testid="email"]').clear().type(email);
+  cy.get('[data-testid="senha"]').clear().type(password);
+});
+
+Cypress.Commands.add('submitLogin', () => {
+  cy.get('[data-testid="entrar"]').click();
+});
+
+Cypress.Commands.add('loginUI', (email, password) => {
+  cy.visit('/');
+  cy.get('[data-testid="email"]').clear().type(email);
+  cy.get('[data-testid="senha"]').clear().type(password);
+  cy.get('[data-testid="entrar"]').click();
+});
+
+Cypress.Commands.add('goToRegisterUser', () => {
+  cy.get('[data-testid="cadastrar"]').click();
+});
+
+Cypress.Commands.add('goToCreateProduct', () => {
+  cy.get('[data-testid="cadastrarProdutos"]').click();
+});
+
+Cypress.Commands.add('logout', () => {
+  cy.get('[data-testid="logout"]').click();
+});
+
+Cypress.Commands.add('fillProductForm', (product) => {
+  cy.get('[data-testid="nome"]').clear().type(product.nome);
+  cy.get('[data-testid="preco"]').clear().type(product.preco);
+  cy.get('[data-testid="descricao"]').clear().type(product.descricao);
+  cy.get('[data-testid="quantity"]').clear().type(product.quantidade);
+});
+
+Cypress.Commands.add('submitProduct', () => {
+  cy.get('[data-testid="cadastarProdutos"]').click();
+});
+
