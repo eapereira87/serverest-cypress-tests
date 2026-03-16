@@ -14,6 +14,14 @@ Cypress.Commands.add('getLoginAlerts', () => {
   return cy.get('[role="alert"]');
 });
 
+Cypress.Commands.add('getAdminHomeTitle', () => {
+  return cy.get('h1');
+});
+
+Cypress.Commands.add('getInvalidLoginMessage', () => {
+  return cy.contains('Email e/ou senha inválidos');
+});
+
 Cypress.Commands.add('visitLogin', () => {
   cy.visit('/');
 });
@@ -64,10 +72,27 @@ Cypress.Commands.add('assertLoginValidationMessages', (messages) => {
   });
 });
 
+Cypress.Commands.add('assertInvalidLoginMessageVisible', () => {
+  cy.getInvalidLoginMessage().should('be.visible');
+});
+
 Cypress.Commands.add('loginUI', (email, password) => {
   cy.visitLogin();
   cy.fillLogin(email, password);
   cy.submitLogin();
+});
+
+Cypress.Commands.add('assertAdminHome', (userName) => {
+  cy.url().should('include', '/admin/home');
+  cy.getAdminHomeTitle().should('contain', 'Bem Vindo');
+
+  if (userName) {
+    cy.getAdminHomeTitle().should('contain', userName);
+  }
+
+  cy.getCreateUserButton().should('be.visible');
+  cy.getCreateProductButton().should('be.visible');
+  cy.getLogoutButton().should('be.visible');
 });
 
 Cypress.Commands.add('loginAsAdminSession', (adminUser) => {
@@ -85,13 +110,13 @@ Cypress.Commands.add('loginAsAdminSession', (adminUser) => {
       cy.getLoginSubmitButton().should('be.visible').click();
 
       cy.url().should('include', '/admin/home');
-      cy.get('[data-testid="logout"]').should('be.visible');
+      cy.getLogoutButton().should('be.visible');
     },
     {
       validate() {
         cy.visit('/admin/home');
         cy.url().should('include', '/admin/home');
-        cy.get('[data-testid="logout"]').should('be.visible');
+        cy.getLogoutButton().should('be.visible');
       }
     }
   );

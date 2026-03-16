@@ -34,6 +34,10 @@ Cypress.Commands.add('getDeleteProductButtonByName', (name) => {
   return cy.getProductRowByName(name).contains('button', 'Excluir');
 });
 
+Cypress.Commands.add('getDuplicateProductMessage', () => {
+  return cy.contains('Já existe produto com esse nome');
+});
+
 Cypress.Commands.add('generateDynamicProduct', () => {
   const timestamp = Date.now();
 
@@ -102,4 +106,8 @@ Cypress.Commands.add('deleteProductByName', (name) => {
 
 Cypress.Commands.add('assertProductNotInList', (name) => {
   cy.contains('td', name).should('not.exist');
+});
+
+Cypress.Commands.add('assertDuplicateProductMessageVisible', () => {
+  cy.getDuplicateProductMessage().should('be.visible');
 });

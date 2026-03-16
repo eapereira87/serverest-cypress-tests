@@ -11,12 +11,7 @@ describe('Frontend - Login', () => {
         expect(response.body.authorization).to.be.a('string').and.not.be.empty;
       });
 
-      cy.url().should('include', '/admin/home');
-      cy.get('h1').should('contain', 'Bem Vindo');
-      cy.get('h1').should('contain', user.nome);
-      cy.get('[data-testid="cadastrarUsuarios"]').should('be.visible');
-      cy.get('[data-testid="cadastrarProdutos"]').should('be.visible');
-      cy.get('[data-testid="logout"]').should('be.visible');
+      cy.assertAdminHome(user.nome);
     });
   });
 });

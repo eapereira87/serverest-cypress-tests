@@ -69,7 +69,7 @@ describe('Frontend - Gestão de produtos', () => {
           expect(response.body.message).to.eq('Já existe produto com esse nome')
         })
 
-        cy.contains('Já existe produto com esse nome').should('be.visible')
+        cy.assertDuplicateProductMessageVisible()
       })
     })
   })

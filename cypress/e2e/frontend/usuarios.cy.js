@@ -79,7 +79,7 @@ describe('Frontend - Gestão de usuários', () => {
         expect(response.body.message).to.eq('Este email já está sendo usado')
       })
 
-      cy.contains('Este email já está sendo usado').should('be.visible')
+      cy.assertDuplicateUserMessageVisible()
     })
   })
 })

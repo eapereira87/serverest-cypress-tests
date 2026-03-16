@@ -26,6 +26,10 @@ Cypress.Commands.add('getUserRowByEmail', (email) => {
   return cy.contains('td', email).parent('tr');
 });
 
+Cypress.Commands.add('getDuplicateUserMessage', () => {
+  return cy.contains('Este email já está sendo usado');
+});
+
 Cypress.Commands.add('fillUserForm', (user) => {
   cy.getUserNameInput().clear().type(user.nome);
   cy.getUserEmailInput().clear().type(user.email);
@@ -44,6 +48,10 @@ Cypress.Commands.add('submitUserForm', () => {
 
 Cypress.Commands.add('assertUserFormVisible', () => {
   cy.getUserSubmitButton().should('be.visible');
+});
+
+Cypress.Commands.add('assertDuplicateUserMessageVisible', () => {
+  cy.getDuplicateUserMessage().should('be.visible');
 });
 
 Cypress.Commands.add('assertUserListPageVisible', () => {
