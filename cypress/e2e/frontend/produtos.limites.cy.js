@@ -86,4 +86,27 @@ describe('Frontend - Limites de cadastro de produtos', () => {
     });
   });
 
+  it('não deve permitir cadastrar produto com quantidade negativa', () => {
+    const product = {
+      ...createDynamicProduct(),
+      quantidade: -1
+    };
+
+    cy.intercept('POST', `${Cypress.env('apiUrl')}/produtos`).as('postProduto');
+
+    cy.goToCreateProduct();
+    cy.assertProductFormVisible();
+
+    cy.fillProductForm(product);
+    cy.assertProductImageSelected(product);
+
+    cy.submitProduct();
+
+    cy.contains('Quantidade deve ser maior ou igual a 0').should('be.visible');
+
+    cy.wait('@postProduto').then(({ response }) => {
+      expect(response.statusCode).to.eq(400);
+    });
+  });
+
 });
