@@ -1,16 +1,16 @@
 {
   "name": "serverest-cypress",
   "version": "1.0.0",
-  "description": "Automação de testes frontend e API com Cypress para o desafio do ServeRest",
+  "private": true,
   "scripts": {
     "cy:open": "cypress open",
-    "test": "cypress run",
+    "cy:run": "cypress run",
     "test:frontend": "cypress run --spec \"cypress/e2e/frontend/**/*.cy.js\"",
-    "test:api": "cypress run --spec \"cypress/e2e/api/**/*.cy.js\"",
-    "test:chrome": "cypress run --browser chrome"
+    "test:auth": "cypress run --spec \"cypress/e2e/frontend/login*.cy.js,cypress/e2e/frontend/logout.cy.js\"",
+    "test:users": "cypress run --spec \"cypress/e2e/frontend/usuarios*.cy.js\"",
+    "test:products": "cypress run --spec \"cypress/e2e/frontend/produtos*.cy.js\"",
+    "test:smoke": "cypress run --spec \"cypress/e2e/frontend/login.cy.js,cypress/e2e/frontend/usuarios.cy.js,cypress/e2e/frontend/produtos.cy.js\""
   },
-  "author": "Erick Pereira",
-  "license": "MIT",
   "devDependencies": {
     "cypress": "^14.3.0"
   }
