@@ -1,44 +1,42 @@
 describe('Frontend - Gestão de produtos', () => {
-  let adminUser
+  let adminUser;
 
   before(() => {
     cy.createAdminUserViaApi().then((user) => {
-      adminUser = user
-    })
-  })
+      adminUser = user;
+    });
+  });
 
   beforeEach(() => {
-    cy.loginAsAdminSession(adminUser)
-  })
+    cy.loginAsAdminSession(adminUser);
+  });
 
   it('deve cadastrar um novo produto com sucesso pela interface', () => {
     cy.generateDynamicProduct().then((newProduct) => {
-      cy.intercept('POST', `${Cypress.env('apiUrl')}/produtos`).as('postProduto')
+      cy.intercept('POST', `${Cypress.env('apiUrl')}/produtos`).as('postProduto');
 
-      cy.assertAdminHome(adminUser.nome)
-      cy.goToCreateProduct()
-      cy.assertProductFormVisible()
+      cy.assertAdminHome(adminUser.nome);
+      cy.goToCreateProduct();
+      cy.assertProductFormVisible();
 
-      cy.fillProductForm(newProduct)
-      cy.assertProductImageSelected(newProduct)
-      cy.submitProduct()
+      cy.fillProductForm(newProduct);
+      cy.assertProductImageSelected(newProduct);
+      cy.submitProduct();
 
       cy.wait('@postProduto').then(({ response }) => {
-        expect(response.statusCode).to.eq(201)
-        expect(response.body.message).to.eq('Cadastro realizado com sucesso')
-        expect(response.body._id).to.be.a('string').and.not.be.empty
-      })
+        cy.assertSuccessfulProductCreationResponse(response);
+      });
 
-      cy.goToProductList()
-      cy.assertProductListPageVisible()
-      cy.assertProductInList(newProduct)
-    })
-  })
+      cy.goToProductList();
+      cy.assertProductListPageVisible();
+      cy.assertProductInList(newProduct);
+    });
+  });
 
   it('não deve permitir cadastrar produto com nome já existente', () => {
     cy.generateDynamicProduct().then((existingProduct) => {
       cy.apiLogin(adminUser.email, adminUser.password).then((loginResponse) => {
-        const token = loginResponse.body.authorization
+        const token = loginResponse.body.authorization;
 
         cy.request({
           method: 'POST',
@@ -52,32 +50,31 @@ describe('Frontend - Gestão de produtos', () => {
             descricao: existingProduct.descricao,
             quantidade: existingProduct.quantidade
           }
-        })
+        });
 
-        cy.intercept('POST', `${Cypress.env('apiUrl')}/produtos`).as('postProdutoDuplicado')
+        cy.intercept('POST', `${Cypress.env('apiUrl')}/produtos`).as('postProdutoDuplicado');
 
-        cy.assertAdminHome(adminUser.nome)
-        cy.goToCreateProduct()
-        cy.assertProductFormVisible()
+        cy.assertAdminHome(adminUser.nome);
+        cy.goToCreateProduct();
+        cy.assertProductFormVisible();
 
-        cy.fillProductForm(existingProduct)
-        cy.assertProductImageSelected(existingProduct)
-        cy.submitProduct()
+        cy.fillProductForm(existingProduct);
+        cy.assertProductImageSelected(existingProduct);
+        cy.submitProduct();
 
         cy.wait('@postProdutoDuplicado').then(({ response }) => {
-          expect(response.statusCode).to.eq(400)
-          expect(response.body.message).to.eq('Já existe produto com esse nome')
-        })
+          cy.assertDuplicateProductResponse(response);
+        });
 
-        cy.assertDuplicateProductMessageVisible()
-      })
-    })
-  })
+        cy.assertDuplicateProductMessageVisible();
+      });
+    });
+  });
 
   it('deve excluir um produto com sucesso pela interface', () => {
     cy.generateDynamicProduct().then((productToDelete) => {
       cy.apiLogin(adminUser.email, adminUser.password).then((loginResponse) => {
-        const token = loginResponse.body.authorization
+        const token = loginResponse.body.authorization;
 
         cy.request({
           method: 'POST',
@@ -91,24 +88,23 @@ describe('Frontend - Gestão de produtos', () => {
             descricao: productToDelete.descricao,
             quantidade: productToDelete.quantidade
           }
-        })
+        });
 
-        cy.intercept('DELETE', `${Cypress.env('apiUrl')}/produtos/*`).as('deleteProduto')
+        cy.intercept('DELETE', `${Cypress.env('apiUrl')}/produtos/*`).as('deleteProduto');
 
-        cy.assertAdminHome(adminUser.nome)
-        cy.goToProductList()
-        cy.assertProductListPageVisible()
-        cy.getProductRowByName(productToDelete.nome).should('be.visible')
+        cy.assertAdminHome(adminUser.nome);
+        cy.goToProductList();
+        cy.assertProductListPageVisible();
+        cy.getProductRowByName(productToDelete.nome).should('be.visible');
 
-        cy.deleteProductByName(productToDelete.nome)
+        cy.deleteProductByName(productToDelete.nome);
 
         cy.wait('@deleteProduto').then(({ response }) => {
-          expect(response.statusCode).to.eq(200)
-          expect(response.body.message).to.eq('Registro excluído com sucesso')
-        })
+          cy.assertSuccessfulProductDeletionResponse(response);
+        });
 
-        cy.assertProductNotInList(productToDelete.nome)
-      })
-    })
-  })
-})
+        cy.assertProductNotInList(productToDelete.nome);
+      });
+    });
+  });
+});
