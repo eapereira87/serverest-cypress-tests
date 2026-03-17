@@ -9,7 +9,8 @@
     "test:auth": "cypress run --spec \"cypress/e2e/frontend/login*.cy.js,cypress/e2e/frontend/logout.cy.js\"",
     "test:users": "cypress run --spec \"cypress/e2e/frontend/usuarios*.cy.js\"",
     "test:products": "cypress run --spec \"cypress/e2e/frontend/produtos*.cy.js\"",
-    "test:smoke": "cypress run --spec \"cypress/e2e/frontend/login.cy.js,cypress/e2e/frontend/usuarios.cy.js,cypress/e2e/frontend/produtos.cy.js\""
+    "test:smoke": "cypress run --spec \"cypress/e2e/frontend/login.cy.js,cypress/e2e/frontend/usuarios.cy.js,cypress/e2e/frontend/produtos.cy.js\"",
+    "test:api": "cypress run --spec \"cypress/e2e/api/**/*.cy.js\""
   },
   "devDependencies": {
     "cypress": "^14.3.0"

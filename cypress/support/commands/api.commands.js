@@ -9,14 +9,20 @@ Cypress.Commands.add('apiCreateUser', (user) => {
   });
 });
 
+Cypress.Commands.add('apiListUsers', (query = {}) => {
+  return cy.request({
+    method: 'GET',
+    url: `${Cypress.env('apiUrl')}/usuarios`,
+    qs: query
+  });
+});
+
 Cypress.Commands.add('apiLogin', (email, password) => {
   return cy.request({
     method: 'POST',
     url: `${Cypress.env('apiUrl')}/login`,
-    body: {
-      email,
-      password
-    }
+    failOnStatusCode: false,
+    body: { email, password }
   });
 });
 
@@ -24,6 +30,7 @@ Cypress.Commands.add('apiCreateProduct', (token, product) => {
   return cy.request({
     method: 'POST',
     url: `${Cypress.env('apiUrl')}/produtos`,
+    failOnStatusCode: false,
     headers: {
       Authorization: token
     },
@@ -32,6 +39,33 @@ Cypress.Commands.add('apiCreateProduct', (token, product) => {
       preco: product.preco,
       descricao: product.descricao,
       quantidade: product.quantidade
+    }
+  });
+});
+
+Cypress.Commands.add('apiListProducts', (query = {}) => {
+  return cy.request({
+    method: 'GET',
+    url: `${Cypress.env('apiUrl')}/produtos`,
+    qs: query
+  });
+});
+
+Cypress.Commands.add('apiGetProductById', (id) => {
+  return cy.request({
+    method: 'GET',
+    url: `${Cypress.env('apiUrl')}/produtos/${id}`,
+    failOnStatusCode: false
+  });
+});
+
+Cypress.Commands.add('apiDeleteProduct', (token, id) => {
+  return cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('apiUrl')}/produtos/${id}`,
+    failOnStatusCode: false,
+    headers: {
+      Authorization: token
     }
   });
 });
