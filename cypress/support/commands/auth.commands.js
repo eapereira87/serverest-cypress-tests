@@ -51,24 +51,16 @@ Cypress.Commands.add('assertStayedOnLoginPage', () => {
   cy.assertLoginPageVisible();
 });
 
-Cypress.Commands.add('assertLoginAlertCount', (count) => {
-  cy.getLoginAlerts().should('have.length', count);
-});
-
-Cypress.Commands.add('assertLoginAlertContains', (index, expectedText) => {
-  cy.getLoginAlerts()
-    .eq(index)
-    .invoke('text')
-    .then((text) => {
-      expect(text.toLowerCase()).to.include(expectedText.toLowerCase());
-    });
-});
-
 Cypress.Commands.add('assertLoginValidationMessages', (messages) => {
   cy.getLoginAlerts().should('have.length', messages.length);
 
   messages.forEach((message, index) => {
-    cy.assertLoginAlertContains(index, message);
+    cy.getLoginAlerts()
+      .eq(index)
+      .invoke('text')
+      .then((text) => {
+        expect(text.toLowerCase()).to.include(message.toLowerCase());
+      });
   });
 });
 
@@ -96,19 +88,16 @@ Cypress.Commands.add('assertAdminHome', (userName) => {
 });
 
 Cypress.Commands.add('loginAsAdminSession', (adminUser) => {
-  expect(adminUser, 'adminUser deve existir').to.exist;
-  expect(adminUser.email, 'adminUser.email deve existir').to.be.a('string').and.not.be.empty;
-  expect(adminUser.password, 'adminUser.password deve existir').to.be.a('string').and.not.be.empty;
+  expect(adminUser).to.exist;
+  expect(adminUser.email).to.be.a('string').and.not.be.empty;
+  expect(adminUser.password).to.be.a('string').and.not.be.empty;
 
   cy.session(
     ['admin-session', adminUser.email],
     () => {
       cy.visit('/');
-
-      cy.getLoginEmailInput().should('be.visible').clear().type(adminUser.email);
-      cy.getLoginPasswordInput().should('be.visible').clear().type(adminUser.password, { log: false });
-      cy.getLoginSubmitButton().should('be.visible').click();
-
+      cy.fillLogin(adminUser.email, adminUser.password);
+      cy.submitLogin();
       cy.url().should('include', '/admin/home');
       cy.getLogoutButton().should('be.visible');
     },
