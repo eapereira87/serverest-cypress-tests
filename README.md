@@ -1,19 +1,23 @@
-# 🧪 ServeRest Test Automation | Cypress
+# 🧪 ServeRest Cypress Test Automation
 
 [![CI](https://github.com/eapereira87/serverest-cypress-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/eapereira87/serverest-cypress-tests/actions/workflows/ci.yml)
 ![Cypress](https://img.shields.io/badge/Cypress-14.x-17202C?logo=cypress&logoColor=white)
 ![Node](https://img.shields.io/badge/node-20.x-green)
-![Tests](https://img.shields.io/badge/tests-e2e%20%7C%20api-blue)
 
-Projeto de automação de testes desenvolvido com **Cypress** para validar **fluxos End-to-End (Frontend)** e **API REST** da aplicação **ServeRest**.
+Este repositório contém uma suíte de **automação de testes utilizando Cypress** para validar funcionalidades da aplicação **ServeRest**.
 
-O objetivo deste projeto é demonstrar **boas práticas de engenharia de testes**, organização de automação e integração com **CI/CD**, mantendo simplicidade e clareza no código.
+O projeto cobre dois níveis de testes:
+
+- **Frontend (End-to-End)** – interação com a interface web
+- **API** – validação direta dos endpoints REST
+
+A intenção deste projeto é demonstrar uma automação **simples, organizada e executável em CI**, focada em clareza e manutenção.
 
 ---
 
-# 📌 Sobre o ServeRest
+# 📌 Aplicação testada
 
-O **ServeRest** é uma API que simula uma **loja virtual**, criada para estudo de testes de software.
+Este projeto utiliza a aplicação de demonstração **ServeRest**, que simula uma pequena loja virtual.
 
 Frontend  
 https://front.serverest.dev
@@ -23,137 +27,218 @@ https://serverest.dev
 
 ---
 
-# 🎯 Objetivo do Projeto
+# 🎯 Escopo dos testes
 
-Este projeto demonstra:
+Os testes implementados cobrem fluxos principais da aplicação.
 
-✔ Automação End-to-End  
-✔ Testes de API  
-✔ Validação de contratos  
-✔ Dados dinâmicos  
-✔ Integração com CI  
-✔ Relatórios HTML
+## Frontend (E2E)
 
----
+Fluxos automatizados pela interface:
 
-# 🏗 Arquitetura
+Login
+- login com sucesso
+- login com credenciais inválidas
+- validação de campos obrigatórios
 
-serverest-cypress-tests
+Usuários
+- cadastro de usuário
+- validação de email duplicado
+- validação de email inválido
 
-cypress  
- ├─ e2e  
- │   ├─ frontend  
- │   └─ api  
- │
- ├─ support  
- │   ├─ commands  
- │   ├─ factories  
- │   ├─ schemas  
- │   └─ utils  
- │
- └─ reports  
-
-.github  
- └─ workflows  
-
-cypress.config.js  
-package.json  
+Produtos
+- cadastro de produto
+- exclusão de produto
+- validação de campos obrigatórios
+- validação de nome duplicado
+- validação de quantidade inválida
 
 ---
 
-# 🧪 Estratégia de Testes
+## API
 
-Frontend (E2E)
+Testes diretos nos endpoints REST.
 
-- Login
-- Cadastro de usuários
-- Cadastro de produtos
-- Validações de formulário
-- Regras de negócio
+Login
+- autenticação válida
+- autenticação inválida
 
-API
+Usuários
+- criação de usuário
+- consulta por email
+- validação de duplicidade
 
-- Login
-- CRUD usuários
-- CRUD produtos
-- Validação de duplicidade
+Produtos
+- criação de produto
+- consulta de produto
+- exclusão de produto
+- validação de duplicidade
 
 ---
 
-# 🧬 Dados Dinâmicos
+# 📜 Validação de contratos
 
-Os testes utilizam geração dinâmica de dados:
-
-- emails únicos
-- produtos únicos
-- usuários temporários
+Alguns testes de API também validam a **estrutura das respostas** utilizando schemas simples.
 
 Isso garante:
 
-✔ execuções independentes  
-✔ testes repetíveis  
+- presença de propriedades esperadas
+- tipos de dados corretos
+- estrutura consistente da API
 
 ---
 
-# ⚙️ Tecnologias
+# 🧬 Dados dinâmicos
 
-Cypress  
-Node.js  
-JavaScript  
-Chai  
-Mochawesome  
-GitHub Actions  
+Os testes utilizam geração dinâmica de dados para evitar dependência entre execuções.
+
+Exemplos:
+
+- emails únicos
+- nomes de produtos únicos
+- usuários temporários
+
+Isso permite que a suíte seja executada várias vezes sem conflito de dados.
 
 ---
 
-# 🚀 Executando
+# 🏗 Estrutura do projeto
 
-Instalar dependências
+Estrutura simplificada da automação:
 
+```
+cypress
+│
+├─ e2e
+│  │
+│  ├─ frontend
+│  │   ├─ login.cy.js
+│  │   ├─ login.validacao.cy.js
+│  │   ├─ usuarios.cy.js
+│  │   ├─ produtos.cy.js
+│  │   └─ produtos.validacao.cy.js
+│  │
+│  └─ api
+│      ├─ login.api.cy.js
+│      ├─ usuarios.api.cy.js
+│      └─ produtos.api.cy.js
+│
+├─ support
+│  │
+│  ├─ commands
+│  │   comandos reutilizáveis utilizados nos testes
+│  │
+│  ├─ factories
+│  │   geração de dados dinâmicos
+│  │
+│  ├─ schemas
+│  │   schemas utilizados na validação de contratos da API
+│  │
+│  └─ utils
+│      utilidades compartilhadas
+│
+└─ reports
+   relatórios gerados após execução dos testes
+```
+
+---
+
+# ⚙️ Tecnologias utilizadas
+
+- Cypress
+- Node.js
+- JavaScript
+- Chai (assertions)
+- Mochawesome (relatório HTML)
+- GitHub Actions (CI)
+
+---
+
+# 🚀 Como executar o projeto
+
+## 1. Instalar dependências
+
+```bash
 npm install
+```
 
-Abrir Cypress
+---
 
-npm run cy:open
+## 2. Executar todos os testes
 
-Executar testes
-
+```bash
 npm run cy:run
+```
 
-Executar frontend
+---
 
+## 3. Abrir Cypress em modo interativo
+
+```bash
+npm run cy:open
+```
+
+---
+
+## 4. Executar apenas testes de frontend
+
+```bash
 npm run test:frontend
+```
 
-Executar API
+---
 
+## 5. Executar apenas testes de API
+
+```bash
 npm run test:api
+```
 
 ---
 
-# 📊 Relatório
+## 6. Executar apenas testes de smoke
 
-Gerar execução
+```bash
+npm run test:smoke
+```
 
+---
+
+# 📊 Relatório de execução
+
+O projeto gera relatório HTML utilizando **Mochawesome**.
+
+Executar testes gerando relatório:
+
+```bash
 npm run test:report
+```
 
-Gerar HTML
+Gerar o relatório HTML:
 
+```bash
 npm run report:generate
+```
 
-Abrir relatório
+O relatório será gerado em:
 
+```
 cypress/reports/html/report.html
+```
 
 ---
 
-# 🤖 CI
+# 🤖 Integração contínua
 
-Pipeline no GitHub Actions executa:
+O repositório possui pipeline configurado no **GitHub Actions**.
 
-1 instalação de dependências  
-2 execução dos testes  
-3 geração do relatório  
-4 publicação como artifact  
+A pipeline executa automaticamente:
+
+1. instalação das dependências
+2. execução da suíte de testes
+3. geração do relatório
+4. publicação do relatório como artifact
+
+O relatório pode ser baixado diretamente na execução da pipeline.
 
 ---
 
