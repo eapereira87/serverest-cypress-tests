@@ -1,28 +1,50 @@
 import { createDynamicUser } from '../../support/factories';
 import { assertSchema } from '../../support/utils/schemaValidator';
-import { createUserResponseSchema, listUsersSchema, errorMessageSchema } from '../../support/schemas/user.schema';
+import {
+  createUserResponseSchema,
+  listUsersSchema,
+  errorMessageSchema
+} from '../../support/schemas/user.schema';
 
 describe('API - Usuários', () => {
+  let usuarioId;
+
+  beforeEach(() => {
+    usuarioId = undefined;
+  });
+
+  afterEach(() => {
+    if (usuarioId) {
+      cy.apiDeleteUser(usuarioId).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      });
+    }
+  });
 
   it('deve cadastrar usuário com sucesso e localizar na listagem por email', () => {
     const user = createDynamicUser({ administrador: 'false' });
 
     cy.apiCreateUser(user).then((response) => {
+      usuarioId = response.body._id;
+
       expect(response.status).to.eq(201);
       expect(response.body.message).to.eq('Cadastro realizado com sucesso');
-      expect(response.body._id).to.be.a('string').and.not.be.empty;
+      expect(usuarioId).to.be.a('string').and.not.be.empty;
 
       assertSchema(response.body, createUserResponseSchema);
     });
 
     cy.apiListUsers({ email: user.email }).then((response) => {
       expect(response.status).to.eq(200);
-      expect(response.body.quantidade).to.be.greaterThan(0);
+      expect(response.body.quantidade).to.eq(1);
 
       assertSchema(response.body, listUsersSchema);
 
-      const foundUser = response.body.usuarios.find((item) => item.email === user.email);
-      expect(foundUser, 'usuário deve existir na listagem').to.exist;
+      const foundUser = response.body.usuarios[0];
+
+      expect(foundUser._id).to.eq(usuarioId);
+      expect(foundUser.email).to.eq(user.email);
       expect(foundUser.nome).to.eq(user.nome);
       expect(foundUser.administrador).to.eq(user.administrador);
     });
@@ -31,8 +53,11 @@ describe('API - Usuários', () => {
   it('não deve permitir cadastrar usuário com email duplicado', () => {
     const user = createDynamicUser();
 
-    cy.apiCreateUser(user).then((firstResponse) => {
-      expect(firstResponse.status).to.eq(201);
+    cy.apiCreateUser(user).then((response) => {
+      usuarioId = response.body._id;
+
+      expect(response.status).to.eq(201);
+      expect(usuarioId).to.be.a('string').and.not.be.empty;
     });
 
     cy.apiCreateUser(user).then((response) => {
@@ -42,5 +67,4 @@ describe('API - Usuários', () => {
       assertSchema(response.body, errorMessageSchema);
     });
   });
-
 });
