@@ -1,9 +1,7 @@
 import { createDynamicProduct } from '../../support/factories';
 
 describe('Frontend - Limites de cadastro de produtos', () => {
-
-  let adminUser;
-
+  
   let adminUser;
   let authToken;
   let produtoId;
