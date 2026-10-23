@@ -8,9 +8,9 @@ import {
 } from '../../support/schemas/product.schema';
 
 describe('API - Produtos', () => {
-
   let adminUser;
   let authToken;
+  let produtoId;
 
   before(() => {
     cy.createAdminUserViaApi().then((user) => {
@@ -23,13 +23,39 @@ describe('API - Produtos', () => {
     });
   });
 
+  beforeEach(() => {
+    produtoId = undefined;
+  });
+
+  afterEach(() => {
+    if (produtoId) {
+      cy.apiDeleteProduct(authToken, produtoId).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+
+        produtoId = undefined;
+      });
+    }
+  });
+
+  after(() => {
+    if (adminUser?._id) {
+      cy.apiDeleteUser(adminUser._id).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      });
+    }
+  });
+
   it('deve cadastrar produto com sucesso', () => {
     const product = createDynamicProduct();
 
     cy.apiCreateProduct(authToken, product).then((response) => {
+      produtoId = response.body._id;
+
       expect(response.status).to.eq(201);
       expect(response.body.message).to.eq('Cadastro realizado com sucesso');
-      expect(response.body._id).to.be.a('string').and.not.be.empty;
+      expect(produtoId).to.be.a('string').and.not.be.empty;
 
       assertSchema(response.body, createProductResponseSchema);
     });
@@ -38,19 +64,21 @@ describe('API - Produtos', () => {
   it('deve consultar produto por id após cadastro', () => {
     const product = createDynamicProduct();
 
-    cy.apiCreateProduct(authToken, product).then((createResponse) => {
-      expect(createResponse.status).to.eq(201);
+    cy.apiCreateProduct(authToken, product).then((response) => {
+      produtoId = response.body._id;
 
-      const productId = createResponse.body._id;
+      expect(response.status).to.eq(201);
+      expect(produtoId).to.be.a('string').and.not.be.empty;
 
-      cy.apiGetProductById(productId).then((response) => {
-        expect(response.status).to.eq(200);
-        expect(response.body.nome).to.eq(product.nome);
-        expect(response.body.preco).to.eq(product.preco);
-        expect(response.body.descricao).to.eq(product.descricao);
-        expect(response.body.quantidade).to.eq(product.quantidade);
+      cy.apiGetProductById(produtoId).then((consulta) => {
+        expect(consulta.status).to.eq(200);
+        expect(consulta.body._id).to.eq(produtoId);
+        expect(consulta.body.nome).to.eq(product.nome);
+        expect(consulta.body.preco).to.eq(product.preco);
+        expect(consulta.body.descricao).to.eq(product.descricao);
+        expect(consulta.body.quantidade).to.eq(product.quantidade);
 
-        assertSchema(response.body, productSchema);
+        assertSchema(consulta.body, productSchema);
       });
     });
   });
@@ -58,8 +86,11 @@ describe('API - Produtos', () => {
   it('não deve permitir cadastrar produto com nome duplicado', () => {
     const product = createDynamicProduct();
 
-    cy.apiCreateProduct(authToken, product).then((firstResponse) => {
-      expect(firstResponse.status).to.eq(201);
+    cy.apiCreateProduct(authToken, product).then((response) => {
+      produtoId = response.body._id;
+
+      expect(response.status).to.eq(201);
+      expect(produtoId).to.be.a('string').and.not.be.empty;
     });
 
     cy.apiCreateProduct(authToken, product).then((response) => {
@@ -73,24 +104,29 @@ describe('API - Produtos', () => {
   it('deve excluir produto com sucesso', () => {
     const product = createDynamicProduct();
 
-    cy.apiCreateProduct(authToken, product).then((createResponse) => {
-      expect(createResponse.status).to.eq(201);
-      const productId = createResponse.body._id;
+    cy.apiCreateProduct(authToken, product).then((response) => {
+      produtoId = response.body._id;
 
-      cy.apiDeleteProduct(authToken, productId).then((response) => {
-        expect(response.status).to.eq(200);
-        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      expect(response.status).to.eq(201);
+      expect(produtoId).to.be.a('string').and.not.be.empty;
 
-        assertSchema(response.body, deleteProductResponseSchema);
+      const idExcluido = produtoId;
+
+      cy.apiDeleteProduct(authToken, idExcluido).then((exclusao) => {
+        expect(exclusao.status).to.eq(200);
+        expect(exclusao.body.message).to.eq('Registro excluído com sucesso');
+
+        produtoId = undefined;
+
+        assertSchema(exclusao.body, deleteProductResponseSchema);
       });
 
-      cy.apiGetProductById(productId).then((response) => {
-        expect(response.status).to.eq(400);
-        expect(response.body.message).to.eq('Produto não encontrado');
+      cy.apiGetProductById(idExcluido).then((consulta) => {
+        expect(consulta.status).to.eq(400);
+        expect(consulta.body.message).to.eq('Produto não encontrado');
 
-        assertSchema(response.body, errorMessageSchema);
+        assertSchema(consulta.body, errorMessageSchema);
       });
     });
   });
-
 });
