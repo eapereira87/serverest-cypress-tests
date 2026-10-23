@@ -38,19 +38,6 @@ Cypress.Commands.add('getDuplicateProductMessage', () => {
   return cy.contains('Já existe produto com esse nome');
 });
 
-Cypress.Commands.add('generateDynamicProduct', () => {
-  const timestamp = Date.now();
-
-  const product = {
-    nome: `Produto QA ${timestamp}`,
-    preco: Number(`1${String(timestamp).slice(-2)}`),
-    descricao: `Descricao produto ${timestamp}`,
-    quantidade: Number(String(timestamp).slice(-2))
-  };
-
-  return cy.wrap(product);
-});
-
 Cypress.Commands.add('fillProductForm', (product) => {
   cy.getProductNameInput().clear().type(product.nome);
   cy.getProductPriceInput().clear().type(String(product.preco));
