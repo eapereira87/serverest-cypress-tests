@@ -61,8 +61,11 @@ describe('Frontend - Limites de cadastro de produtos', () => {
     cy.submitProduct();
 
     cy.wait('@postProduto').then(({ response }) => {
+      produtoId = response.body._id;
+
       expect(response.statusCode).to.eq(201);
       expect(response.body.message).to.eq('Cadastro realizado com sucesso');
+      expect(produtoId).to.be.a('string').and.not.be.empty;
     });
 
     cy.goToProductList();
