@@ -79,4 +79,11 @@ Cypress.Commands.add('createAdminUserViaApi', () => {
     expect(response.body._id).to.be.a('string').and.not.be.empty;
     return cy.wrap(user);
   });
+
+  Cypress.Commands.add('apiDeleteUser', (id) => {
+  return cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('apiUrl')}/usuarios/${id}`
+  });
+});
 });
