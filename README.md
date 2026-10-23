@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/eapereira87/serverest-cypress-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/eapereira87/serverest-cypress-tests/actions/workflows/ci.yml)
 ![Cypress](https://img.shields.io/badge/Cypress-14.x-17202C?logo=cypress&logoColor=white)
-![Node](https://img.shields.io/badge/node-20.x-green)
+![Node](https://img.shields.io/badge/node-22.x-green)
 
 Este repositório contém uma suíte de **automação de testes utilizando Cypress** para validar funcionalidades da aplicação **ServeRest**.
 
@@ -89,56 +89,49 @@ Isso garante:
 
 # 🧬 Dados dinâmicos
 
-Os testes utilizam geração dinâmica de dados para evitar dependência entre execuções.
+As factories utilizam UUID para gerar nomes e e-mails únicos.
 
-Exemplos:
+Usuários e produtos criados pelos testes são removidos pelos hooks de limpeza. Os produtos são excluídos antes dos administradores.
 
-- emails únicos
-- nomes de produtos únicos
-- usuários temporários
+A limpeza também é executada após falhas de assertivas quando o ID do cadastro já foi recebido. Interrupções da execução ou indisponibilidade do ambiente podem impedir essa remoção.
 
-Isso permite que a suíte seja executada várias vezes sem conflito de dados.
+Os testes de produtos utilizam uma imagem PNG real em `cypress/fixtures/produto.png`.
 
 ---
 
 # 🏗 Estrutura do projeto
 
-Estrutura simplificada da automação:
+| Caminho                                             | Descrição                                              |
+| ---                                                 | ---                                                    |
+| `.github/workflows/ci.yml`                          | Pipeline do GitHub Actions                             |
+| `cypress/e2e/frontend/login.cy.js`                  | Login com credenciais válidas                          |
+| `cypress/e2e/frontend/login.validacao.cy.js`        | Login com credenciais inválidas                        |
+| `cypress/e2e/frontend/login.validacao.campos.cy.js` | Campos obrigatórios do login                           |
+| `cypress/e2e/frontend/logout.cy.js`                 | Encerramento da sessão                                 |
+| `cypress/e2e/frontend/usuarios.cy.js`               | Cadastro de usuários e e-mail duplicado                |
+| `cypress/e2e/frontend/usuarios.validacao.cy.js`     | Validações do cadastro de usuários                     |
+| `cypress/e2e/frontend/produtos.cy.js`               | Cadastro, duplicidade e exclusão de produtos           |
+| `cypress/e2e/frontend/produtos.limites.cy.js`       | Limites de preço e quantidade                          |
+| `cypress/e2e/frontend/produtos.validacao.cy.js`     | Campos obrigatórios e nome duplicado                   |
+| `cypress/e2e/api/login.api.cy.js`                   | Autenticação pela API                                  |
+| `cypress/e2e/api/usuarios.api.cy.js`                | Cadastro, consulta e duplicidade de usuários           |
+| `cypress/e2e/api/produtos.api.cy.js`                | Cadastro, consulta, duplicidade e exclusão de produtos |
+| `cypress/fixtures/produto.png`                      | Imagem utilizada nos testes de produtos                |
+| `cypress/support/commands/`                         | Comandos reutilizáveis separados por domínio           |
+| `cypress/support/commands.js`                       | Importação dos comandos                                |
+| `cypress/support/e2e.js`                            | Inicialização do suporte dos testes                    |
+| `cypress/support/factories.js`                      | Geração dos dados de teste com UUID                    |
+| `cypress/support/schemas/`                          | Estruturas esperadas das respostas da API              |
+| `cypress/support/utils/schemaValidator.js`          | Validação das respostas pelos schemas                  |
+| `cypress/reports/`                                  | Relatórios JSON gerados durante a execução             |
+| `cypress/reports/merged/mochawesome.json`           | Resultado consolidado dos testes                       |
+| `cypress/reports/html/report.html`                  | Relatório HTML                                         |
+| `cypress/screenshots/`                              | Screenshots de falhas                                  |
+| `cypress.config.js`                                 | Configuração do Cypress                                |
+| `package.json`                                      | Dependências e comandos de execução                    |
+| `package-lock.json`                                 | Versões registradas das dependências                   |
 
-```
-cypress
-│
-├─ e2e
-│  │
-│  ├─ frontend
-│  │   ├─ login.cy.js
-│  │   ├─ login.validacao.cy.js
-│  │   ├─ usuarios.cy.js
-│  │   ├─ produtos.cy.js
-│  │   └─ produtos.validacao.cy.js
-│  │
-│  └─ api
-│      ├─ login.api.cy.js
-│      ├─ usuarios.api.cy.js
-│      └─ produtos.api.cy.js
-│
-├─ support
-│  │
-│  ├─ commands
-│  │   comandos reutilizáveis utilizados nos testes
-│  │
-│  ├─ factories
-│  │   geração de dados dinâmicos
-│  │
-│  ├─ schemas
-│  │   schemas utilizados na validação de contratos da API
-│  │
-│  └─ utils
-│      utilidades compartilhadas
-│
-└─ reports
-   relatórios gerados após execução dos testes
-```
+As pastas de relatórios e screenshots são geradas durante a execução e não são versionadas.
 
 ---
 
@@ -158,7 +151,7 @@ cypress
 ## 1. Instalar dependências
 
 ```bash
-npm install
+npm ci
 ```
 
 ---
@@ -224,6 +217,10 @@ O relatório será gerado em:
 ```
 cypress/reports/html/report.html
 ```
+
+Os resultados JSON de todos os testes são consolidados em `cypress/reports/merged/mochawesome.json`.
+
+O relatório HTML é gerado em `cypress/reports/html/report.html`.
 
 ---
 
