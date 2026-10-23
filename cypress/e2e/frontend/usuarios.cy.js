@@ -1,8 +1,8 @@
 import { createDynamicUser } from '../../support/factories';
 
 describe('Frontend - Gestão de usuários', () => {
-
   let adminUser;
+  let usuarioId;
 
   before(() => {
     cy.createAdminUserViaApi().then((user) => {
@@ -11,7 +11,26 @@ describe('Frontend - Gestão de usuários', () => {
   });
 
   beforeEach(() => {
+    usuarioId = undefined;
     cy.loginAsAdminSession(adminUser);
+  });
+
+  afterEach(() => {
+    if (usuarioId) {
+      cy.apiDeleteUser(usuarioId).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      });
+    }
+  });
+
+  after(() => {
+    if (adminUser?._id) {
+      cy.apiDeleteUser(adminUser._id).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      });
+    }
   });
 
   it('deve cadastrar um novo usuário administrador', () => {
@@ -27,9 +46,11 @@ describe('Frontend - Gestão de usuários', () => {
     cy.submitUserForm();
 
     cy.wait('@postUsuario').then(({ response }) => {
+      usuarioId = response.body._id;
+
       expect(response.statusCode).to.eq(201);
       expect(response.body.message).to.eq('Cadastro realizado com sucesso');
-      expect(response.body._id).to.be.a('string').and.not.be.empty;
+      expect(usuarioId).to.be.a('string').and.not.be.empty;
     });
 
     cy.goToUserList();
@@ -41,10 +62,14 @@ describe('Frontend - Gestão de usuários', () => {
     const existingUser = createDynamicUser({ administrador: 'true' });
 
     cy.apiCreateUser(existingUser).then((response) => {
+      usuarioId = response.body._id;
+
       expect(response.status).to.eq(201);
+      expect(usuarioId).to.be.a('string').and.not.be.empty;
     });
 
-    cy.intercept('POST', `${Cypress.env('apiUrl')}/usuarios`).as('postUsuarioDuplicado');
+    cy.intercept('POST', `${Cypress.env('apiUrl')}/usuarios`)
+      .as('postUsuarioDuplicado');
 
     cy.assertAdminHome(adminUser.nome);
     cy.goToCreateUserFromHome();
@@ -60,5 +85,4 @@ describe('Frontend - Gestão de usuários', () => {
 
     cy.assertDuplicateUserMessageVisible();
   });
-
 });
