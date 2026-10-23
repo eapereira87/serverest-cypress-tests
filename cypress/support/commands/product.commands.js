@@ -62,12 +62,10 @@ Cypress.Commands.add('fillProductForm', (product) => {
   cy.getProductDescriptionInput().clear().type(product.descricao);
   cy.getProductQuantityInput().clear().type(String(product.quantidade));
 
-  cy.getProductImageInput().selectFile({
-    contents: product.imagem.contents,
-    fileName: product.imagem.fileName,
-    mimeType: product.imagem.mimeType,
-    lastModified: Date.now()
-  }, { force: true });
+  cy.getProductImageInput().selectFile(
+  'cypress/fixtures/produto.png',
+  { force: true }
+);
 });
 
 Cypress.Commands.add('submitProduct', () => {
@@ -97,7 +95,7 @@ Cypress.Commands.add('assertProductInList', (product) => {
     .and('contain', String(product.preco))
     .and('contain', product.descricao)
     .and('contain', String(product.quantidade))
-    .and('contain', product.imagem.fileName);
+    .and('contain', 'produto.png');
 });
 
 Cypress.Commands.add('deleteProductByName', (name) => {
