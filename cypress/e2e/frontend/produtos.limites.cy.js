@@ -4,14 +4,44 @@ describe('Frontend - Limites de cadastro de produtos', () => {
 
   let adminUser;
 
+  let adminUser;
+  let authToken;
+  let produtoId;
+
   before(() => {
     cy.createAdminUserViaApi().then((user) => {
       adminUser = user;
+
+      cy.apiLogin(user.email, user.password).then((response) => {
+        expect(response.status).to.eq(200);
+        authToken = response.body.authorization;
+      });
     });
   });
 
   beforeEach(() => {
+    produtoId = undefined;
     cy.loginAsAdminSession(adminUser);
+  });
+
+  afterEach(() => {
+    if (produtoId) {
+      cy.apiDeleteProduct(authToken, produtoId).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+
+        produtoId = undefined;
+      });
+    }
+  });
+
+  after(() => {
+    if (adminUser?._id) {
+      cy.apiDeleteUser(adminUser._id).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      });
+    }
   });
 
   it('deve permitir cadastrar produto com quantidade zero', () => {
