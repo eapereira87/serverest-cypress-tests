@@ -1,14 +1,25 @@
 import { assertSchema } from '../../support/utils/schemaValidator';
-import { loginSuccessSchema, errorMessageSchema } from '../../support/schemas/login.schema';
+import {
+  loginSuccessSchema,
+  errorMessageSchema
+} from '../../support/schemas/login.schema';
 
 describe('API - Login', () => {
-
   let adminUser;
 
   before(() => {
     cy.createAdminUserViaApi().then((user) => {
       adminUser = user;
     });
+  });
+
+  after(() => {
+    if (adminUser?._id) {
+      cy.apiDeleteUser(adminUser._id).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      });
+    }
   });
 
   it('deve realizar login com sucesso com credenciais válidas', () => {
@@ -29,5 +40,4 @@ describe('API - Login', () => {
       assertSchema(response.body, errorMessageSchema);
     });
   });
-
 });
