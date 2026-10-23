@@ -19,18 +19,6 @@ export const productSchema = {
   }
 };
 
-export const listProductsSchema = {
-  type: 'object',
-  required: ['quantidade', 'produtos'],
-  properties: {
-    quantidade: { type: 'number' },
-    produtos: {
-      type: 'array',
-      items: productSchema
-    }
-  }
-};
-
 export const deleteProductResponseSchema = {
   type: 'object',
   required: ['message'],
