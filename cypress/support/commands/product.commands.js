@@ -71,11 +71,12 @@ Cypress.Commands.add('assertProductFormVisible', () => {
   cy.getProductSubmitButton().should('be.visible');
 });
 
-Cypress.Commands.add('assertProductImageSelected', (product) => {
-  cy.getProductImageInput().then(($input) => {
+Cypress.Commands.add('assertProductImageSelected', () => {
+  cy.getProductImageInput().should(($input) => {
     const input = $input[0];
+
     expect(input.files).to.have.length(1);
-    expect(input.files[0].name).to.eq(product.imagem.fileName);
+    expect(input.files[0].name).to.eq('produto.png');
   });
 });
 
