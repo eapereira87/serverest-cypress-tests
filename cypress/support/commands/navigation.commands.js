@@ -45,16 +45,3 @@ Cypress.Commands.add('goToProductList', () => {
 Cypress.Commands.add('logout', () => {
   cy.getLogoutButton().click();
 });
-
-Cypress.Commands.add('assertAdminHome', (userName) => {
-  cy.url().should('include', '/admin/home');
-  cy.get('h1').should('contain', 'Bem Vindo');
-
-  if (userName) {
-    cy.get('h1').should('contain', userName);
-  }
-
-  cy.getCreateUserButton().should('be.visible');
-  cy.getCreateProductButton().should('be.visible');
-  cy.getLogoutButton().should('be.visible');
-});
