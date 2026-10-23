@@ -45,12 +45,7 @@ Cypress.Commands.add('generateDynamicProduct', () => {
     nome: `Produto QA ${timestamp}`,
     preco: Number(`1${String(timestamp).slice(-2)}`),
     descricao: `Descricao produto ${timestamp}`,
-    quantidade: Number(String(timestamp).slice(-2)),
-    imagem: {
-      fileName: `produto-${timestamp}.png`,
-      mimeType: 'image/png',
-      contents: Cypress.Buffer.from(`imagem-dinamica-${timestamp}`)
-    }
+    quantidade: Number(String(timestamp).slice(-2))
   };
 
   return cy.wrap(product);
