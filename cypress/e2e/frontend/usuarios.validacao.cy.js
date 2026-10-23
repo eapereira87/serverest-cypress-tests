@@ -14,6 +14,15 @@ describe('Frontend - Validação de cadastro de usuários', () => {
     cy.loginAsAdminSession(adminUser);
   });
 
+    after(() => {
+    if (adminUser?._id) {
+      cy.apiDeleteUser(adminUser._id).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body.message).to.eq('Registro excluído com sucesso');
+      });
+    }
+  });
+
   it('não deve permitir cadastrar usuário sem nome', () => {
     const user = createDynamicUser();
 
