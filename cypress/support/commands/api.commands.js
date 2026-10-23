@@ -78,7 +78,10 @@ Cypress.Commands.add('createAdminUserViaApi', () => {
     expect(response.body.message).to.eq('Cadastro realizado com sucesso');
     expect(response.body._id).to.be.a('string').and.not.be.empty;
 
-    return cy.wrap(user);
+    return {
+      ...user,
+      _id: response.body._id
+    };
   });
 });
 
