@@ -43,14 +43,6 @@ Cypress.Commands.add('apiCreateProduct', (token, product) => {
   });
 });
 
-Cypress.Commands.add('apiListProducts', (query = {}) => {
-  return cy.request({
-    method: 'GET',
-    url: `${Cypress.env('apiUrl')}/produtos`,
-    qs: query
-  });
-});
-
 Cypress.Commands.add('apiGetProductById', (id) => {
   return cy.request({
     method: 'GET',
