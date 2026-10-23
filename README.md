@@ -231,14 +231,18 @@ cypress/reports/html/report.html
 
 O repositório possui pipeline configurado no **GitHub Actions**.
 
-A pipeline executa automaticamente:
+A pipeline executa automaticamente depois de cada commit e também pode ser executada manualmente.
 
-1. instalação das dependências
-2. execução da suíte de testes
-3. geração do relatório
-4. publicação do relatório como artifact
+Para executar manualmente:
 
-O relatório pode ser baixado diretamente na execução da pipeline.
+1. Abra a aba Actions.
+2. Selecione o workflow CI.
+3. Clique em Run workflow.
+4. Escolha a branch e confirme a execução.
+
+A pipeline instala as dependências, verifica o Cypress e executa a suíte. Os passos de geração e upload do relatório também são executados quando os testes falham, desde que a execução não seja cancelada.
+
+Ao finalizar, baixe o artefato `cypress-test-report`. Ele contém os relatórios disponíveis e as screenshots de falhas, quando houver.
 
 ---
 
