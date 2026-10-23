@@ -1,7 +1,3 @@
-Cypress.Commands.add('getSignupLink', () => {
-  return cy.get('[data-testid="cadastrar"]');
-});
-
 Cypress.Commands.add('getCreateUserButton', () => {
   return cy.get('[data-testid="cadastrarUsuarios"]');
 });
@@ -22,10 +18,6 @@ Cypress.Commands.add('getNavbarProductListLink', () => {
   return cy.contains('a', 'Listar Produtos');
 });
 
-Cypress.Commands.add('goToRegisterUser', () => {
-  cy.getSignupLink().click();
-});
-
 Cypress.Commands.add('goToCreateUserFromHome', () => {
   cy.getCreateUserButton().click();
 });
@@ -40,8 +32,4 @@ Cypress.Commands.add('goToCreateProduct', () => {
 
 Cypress.Commands.add('goToProductList', () => {
   cy.getNavbarProductListLink().click();
-});
-
-Cypress.Commands.add('logout', () => {
-  cy.getLogoutButton().click();
 });
