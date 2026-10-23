@@ -12,8 +12,8 @@
     "test:smoke": "cypress run --spec \"cypress/e2e/frontend/login.cy.js,cypress/e2e/frontend/usuarios.cy.js,cypress/e2e/frontend/produtos.cy.js\"",
     "test:api": "cypress run --spec \"cypress/e2e/api/**/*.cy.js\"",
     "test:report": "npm run report:clean && cypress run",
-    "report:merge": "find cypress/reports -maxdepth 1 -name 'mochawesome_*.json' -print0 | xargs -0 npx mochawesome-merge > cypress/reports/mochawesome.json",
-    "report:html": "npx marge cypress/reports/mochawesome.json --reportDir cypress/reports/html --reportFilename report",
+    "report:merge": "mkdir -p cypress/reports/merged && mochawesome-merge \"cypress/reports/mochawesome*.json\" > cypress/reports/merged/mochawesome.json",
+    "report:html": "marge cypress/reports/merged/mochawesome.json --reportDir cypress/reports/html --reportFilename report",
     "report:generate": "npm run report:merge && npm run report:html",
     "report:clean": "rm -rf cypress/reports && mkdir -p cypress/reports"
   },
